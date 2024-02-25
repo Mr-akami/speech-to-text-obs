@@ -1,5 +1,8 @@
 # text-to-speech-obs
 
+# 使い方
+1. nix develop
+
 
 # 行ったことメモ
 
