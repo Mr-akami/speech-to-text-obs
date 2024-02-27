@@ -18,7 +18,17 @@
           buildInputs = [
             pkgs.python310Packages.python
             pkgs.python310Packages.venvShellHook
+            pkgs.python310Packages.pyaudio
             pkgs.ffmpeg
+            pkgs.portaudio
+            pkgs.alsa-lib
+            pkgs.alsa-lib.dev
+            pkgs.alsa-utils
+            pkgs.alsa-tools
+            pkgs.alsa-oss
+            pkgs.alsa-plugins
+            pkgs.pulseaudio
+            pkgs.libpulseaudio
             # this is how we add native dependencies to the shell
             # e.g. grpc libstdc++.so.6
             pkgs.stdenv.cc.cc.lib
@@ -45,7 +55,7 @@
             fi
             # allow pip to install wheels
             echo "LD_LIBRARY_PATH=${pkgs.stdenv.cc.cc.lib}/lib" >> .venv/bin/activate
-            export LD_LIBRARY_PATH=${pkgs.stdenv.cc.cc.lib}/lib 
+            export LD_LIBRARY_PATH=${pkgs.stdenv.cc.cc.lib}/lib
             unset SOURCE_DATE_EPOCH
           '';
         };
