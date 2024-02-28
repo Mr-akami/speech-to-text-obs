@@ -22,8 +22,10 @@
    1. `pip install SpeechRecognition`
    2. so見つからないと言われたので、nix/storeにシンボリックリンク貼ったりした。
       1. これで直っているらしいがまだリリースされてない https://github.com/NixOS/nixpkgs/issues/6860
+      2. Derivationを利用してalsa-libとalsa-pluginをまとめたカスタムパッケージを作った。これて一応flake.nixだけで自動化できた
    3. 今度はこういったエラー ALSA lib pcm_dsnoop.c:567:(snd_pcm_dsnoop_open) unable to open slave
       1. https://github.com/b-fitzpatrick/cpiped/issues/9 この通りにしてみたがなおらず。もとに戻す。
          1. まだ直せない。Nixを使わずネイティブでセットアップしたがだめ。
+         2. 直さなくてよかった。無視していいエラーだった。
 6. リファクタリング
    1. クラスベースに書き直し

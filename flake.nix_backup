@@ -11,33 +11,6 @@
       let
         inherit (nixpkgs.lib) optional;
         pkgs = import nixpkgs { inherit system; };
-        
-        // If https://github.com/NixOS/nixpkgs/issues/6860 is released, myAlsaLib is to be replaced.
-        // This is due to .so files of alsa-plugins should be alsa-lib/lib/alsa-lib
-        myAlsaLib = pkgs.stdenv.mkDerivation rec {
-          pname = "my-alsa-lib";
-          version = "1.0";
-
-          buildInputs = [ pkgs.alsa-lib pkgs.alsa-plugins ];
-
-          installPhase = ''
-            mkdir -p $out/lib/alsa-lib
-
-          # no need to symbolic link because path is the same
-          #  ln -s ${pkgs.alsa-plugins}/lib/alsa-lib/libasound_module_pcm_jack.so $out/lib/alsa-lib
-          #  ln -s ${pkgs.alsa-plugins}/lib/alsa-lib/libasound_module_pcm_oss.so $out/lib/alsa-lib
-          #  ln -s ${pkgs.alsa-plugins}/lib/alsa-lib/libasound_module_pcm_pipewire.so $out/lib/alsa-lib
-          #  ln -s ${pkgs.alsa-plugins}/lib/alsa-lib/libasound_module_pcm_pulse.so $out/lib/alsa-lib
-          #  ln -s ${pkgs.alsa-plugins}/lib/alsa-lib/libasound_module_pcm_upmix.so $out/lib/alsa-lib
-          #  ln -s ${pkgs.alsa-plugins}/lib/alsa-lib/libasound_module_pcm_usb_stream.so $out/lib/alsa-lib
-          #  ln -s ${pkgs.alsa-plugins}/lib/alsa-lib/libasound_module_pcm_vdownmix.so $out/lib/alsa-lib
-          '';
-
-          buildPhase = ":";
-  
-          # dummy source for nix build system
-          src = pkgs.runCommandNoCC "dummy-src" {} "mkdir $out";
-        };
       in
       {
         devShell = pkgs.mkShell {
@@ -56,7 +29,6 @@
             pkgs.alsa-plugins
             pkgs.pulseaudio
             pkgs.libpulseaudio
-            myAlsaLib
             # this is how we add native dependencies to the shell
             # e.g. grpc libstdc++.so.6
             pkgs.stdenv.cc.cc.lib
