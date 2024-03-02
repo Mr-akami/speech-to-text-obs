@@ -18,10 +18,11 @@ class ObsClient:
 
         with open(CSS_TEMPLATE_PATH) as f:
             css_template = f.read()
+        self.css_template = css_template
         self.css = re.sub(" content: .*;", ' content: "Hello, World!";', css_template)
 
     def send_message(self, message):
-        css = re.sub(" content: .*;", ' content: "' + message + '";', CSS_TEMPLATE)
+        css = re.sub(" content: .*;", ' content: "' + message + '";', self.css_template)
         try:
             self.obscl.set_input_settings(TARGET_SOURCE_NAME, {"css": css}, True)
         except Exception as e:
