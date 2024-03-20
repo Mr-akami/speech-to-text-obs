@@ -26,7 +26,7 @@ class Listener:
             while True:
                 audio = self.recognizer.listen(source)
                 self.record_audio_queue.put_nowait(audio)
-                
+
     def make_listen_thread(self):
         return threading.Thread(target=self.listen).start()
 
@@ -34,8 +34,8 @@ class Listener:
         if self.record_audio_queue.qsize() != 0:
             print("pop_front_audio")
             try:
-                yield self.record_audio_queue.get_nowait().get_wav_data()
+                return self.record_audio_queue.get_nowait().get_wav_data()
             except speech_recognition.UnknownValueError:
                 print("Could not understand audio")
             # return self.record_audio_queue.get_nowait()
-        yield None
+        return None
