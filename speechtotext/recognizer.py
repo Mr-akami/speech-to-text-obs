@@ -4,7 +4,7 @@ from datasets import load_dataset, DatasetDict, Dataset, Audio
 class Recognizer:
     def __init__(self, language="Japanese", task="transcribe") -> None:
         self.processor = WhisperProcessor.from_pretrained("openai/whisper-large-v3", language=language, task=task)
-        self.trained_model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-large-v3")
+        self.trained_model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-large-v3").to('cuda')
         self.trained_model.config_max_target_positions = 1024
         self.trained_model.config.force_decoder_ids = self.processor.get_decoder_prompt_ids(language="ja", task=task)
         self.trained_model.config.suppress_tokens = []
@@ -14,7 +14,7 @@ class Recognizer:
         common_voice["train"] = Dataset.from_dict({"audio": [audio]}).cast_column("audio", Audio(sampling_rate=16000))
 
         for i in range(len(common_voice["train"])):
-            inputs = self.processor(common_voice["train"][i]["audio"]["array"], return_tensors="pt", sampling_rate=16000)
+            inputs = self.processor(common_voice["train"][i]["audio"]["array"], return_tensors="pt", sampling_rate=16000).to('cuda')
             input_features = inputs.input_features
 
             try:

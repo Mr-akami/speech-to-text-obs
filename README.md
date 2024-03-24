@@ -46,3 +46,44 @@
 9. 実行したら RuntimeError: Found no NVIDIA driver on your system. Please check that you have an NVIDIA GPU and installed a driver from http://www.nvidia.com/Download/index.aspxのエラーがでた。
    - nvidia-smi でみても Driver はインストールされている。とりあえず CPU モードで試す
 10. CPU モードで試すとうまく認識できたがとても遅い。
+
+11. GPU が認識されないのは nix のせい。Cuda を認識していない。
+
+- python311Packages.torchWithCuda を追加した \* このままだとインストールできななかったので、ホストで`export NIXPKGS_ALLOW_UNFREE=1`をし、`nix deveop --impure`で host の環境変数を持ってきた。nix でお手軽環境構築から離れていてとても気持ちが悪い。うまく言ったとしても代替手段を見つけないといけない。
+  こんな感じでかけるらしい。
+
+```nix
+     {
+  description = "A flake for a nix shell environment with both free and unfree packages";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  };
+
+  outputs = { self, nixpkgs }: {
+    devShell.x86_64-linux = let
+      # カスタマイズされたnixpkgsのインスタンスを生成します。
+      customPkgs = import nixpkgs {
+        config = {
+          allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+            "nvidia-x11-550.54.14-6.6.18"  # ここに非フリーパッケージを追加
+          ];
+        };
+      };
+    in nixpkgs.legacyPackages.x86_64-linux.mkShell {
+      buildInputs = with nixpkgs.legacyPackages.x86_64-linux; [
+        # ここに普通のフリーパッケージを追加
+        git
+        vim
+      ] ++ with customPkgs; [
+        # ここに非フリーパッケージを追加
+        nvidia-x11-550.54.14-6.6.18
+      ];
+    };
+  };
+}
+```
+
+12. faster_whisper を入れてみた
+
+- GPU はメモリが足りない。CPU モードだとおそすぎる。

@@ -47,6 +47,7 @@
             pkgs.python310Packages.pip
             pkgs.python310Packages.venvShellHook
             pkgs.python310Packages.pyaudio
+            pkgs.python311Packages.torchWithCuda
             pkgs.ffmpeg
             pkgs.portaudio
             pkgs.alsa-lib

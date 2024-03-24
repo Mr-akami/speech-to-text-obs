@@ -25,14 +25,16 @@ class Listener:
             print(source)
             while True:
                 audio = self.recognizer.listen(source)
-                self.record_audio_queue.put_nowait(audio)
+                if audio:
+                    print("====put audio====")
+                    self.record_audio_queue.put_nowait(audio)
 
     def make_listen_thread(self):
         return threading.Thread(target=self.listen).start()
 
     def pop_front_audio_wav(self):
         if self.record_audio_queue.qsize() != 0:
-            print("pop_front_audio")
+            print("====pop_front_audio====")
             try:
                 return self.record_audio_queue.get_nowait().get_wav_data()
             except speech_recognition.UnknownValueError:

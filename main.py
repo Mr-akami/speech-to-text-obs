@@ -1,9 +1,11 @@
 from textoutput import obsclient
 from speechtotext import listener, recognizer
 import threading
+import torch
 
 if __name__ == "__main__":
     print("Hello, World!!!!")
+    print(torch.cuda.is_available())
     # obs = obsclient.ObsClient()
     listen = listener.Listener()
     listen.make_listen_thread()
